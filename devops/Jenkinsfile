@@ -19,6 +19,13 @@ pipeline {
                 sh 'pytest -q'
             }
         }
+       stage('Info'){
+            steps{ 
+                  echo "Job: ${env.JOB_NAME}"
+                  echo "Build ${env.BUILD_NUMBER}"
+
+               }
     }
 }
+
 
