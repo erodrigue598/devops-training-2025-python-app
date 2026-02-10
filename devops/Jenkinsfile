@@ -15,6 +15,11 @@ pipeline {
         }
 
         stage('Tests') {
+            agent {
+    docker {
+      image 'python:3.6-slim'
+    }
+  }
             steps {
                 sh 'pytest -q'
             }
