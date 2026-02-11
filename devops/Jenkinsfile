@@ -1,7 +1,12 @@
 pipeline {
-    agent  { docker { image 'python:3.10-slim' } }
+    agent { 
+        docker { 
+            image 'python:3.10-slim' 
+        } 
+    }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -26,19 +31,21 @@ pipeline {
                 echo "Build: ${env.BUILD_NUMBER}" 
             }
         }
-// ejercicio 2
+
+        // Ejercicio 2
         stage('Python Test') {
-    agent {
-        docker {
-            image 'python:3.6-slim'
+            agent {
+                docker {
+                    image 'python:3.6-slim'
+                }
+            }
+            steps {
+                sh 'pip install -r requirements.txt'
+                sh 'pytest -q'
+            }
         }
-    }
-    steps {
-        sh 'pip install -r requirements.txt'
-        sh 'pytest -q'
-    }
-}
 
     }
 }
+
 
