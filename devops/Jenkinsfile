@@ -15,7 +15,10 @@ pipeline {
 
         stage('Instalar dependencias') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh '''
+                apt-get update
+                apt-get install -y gcc libpq-dev python3-dev
+                pip install -r requirements.txt'''
             }
         }
 
