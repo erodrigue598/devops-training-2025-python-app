@@ -9,28 +9,35 @@ pipeline {
         }
 
         stage('Instalar dependencias') {
+             agent {
+                 docker { 
+                            image 'python:3.6-slim'
+                  }
+             }
             steps {
                 sh 'pip install -r requirements.txt'
             }
         }
-
-        stage('Tests') {
-            agent {
-    docker {
-      image 'python:3.6-slim'
-    }
-  }
-            steps {
-                sh 'pytest -q'
-            }
-        }
-       stage('Info'){
+        
+            stage('Info'){
             steps{ 
                   echo "Job: ${env.JOB_NAME}"
                   echo "Build ${env.BUILD_NUMBER}"
 
                }
-               }
+            }
+    
+// ejercicio 2
+        stage('Tests') {
+      agent {
+         docker {
+             image 'python:3.6-slim'
+          }
+       }
+            steps {
+                sh 'pytest -q'
+            }
+        }
     }
 }
 
