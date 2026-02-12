@@ -1,58 +1,71 @@
+
 pipeline {
     agent any
 
     stages {
+
+        // =========================
+        // Checkout
+        // =========================
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-     
-        stage('Lint') {
+        // =========================
+        // Construir imagen CI (usando ci.Dockerfile)
+        // =========================
+        stage('CI - Build tools image') {
+            steps {
+                script {
+                    // Nombre dinámico para evitar colisiones
+                    env.CI_IMAGE_NAME = "python-ci-tools:${env.BUILD_NUMBER}"
+
+                    // Construir la imagen desde devops/ci.Dockerfile
+                    docker.build(env.CI_IMAGE_NAME, "-f devops/ci.Dockerfile .")
+                }
+            }
+        }
+
+        // =========================
+        // Lint (instalando deps dentro del stage)
+        // =========================
+        stage('CI - Lint') {
             agent {
                 docker {
-                    image 'python-ci:3.6'
+                    image "${env.CI_IMAGE_NAME}"
                 }
             }
             steps {
+                sh 'pip install -r requirements.txt flake8 mypy'
                 sh 'make lint'
             }
         }
 
-        stage('Test') {
+        // =========================
+        // Test (instalando deps dentro del stage)
+        // =========================
+        stage('CI - Test') {
             agent {
                 docker {
-                    image 'python-ci:3.6'
+                    image "${env.CI_IMAGE_NAME}"
                 }
             }
             steps {
+                sh 'pip install -r requirements.txt'
                 sh 'make test'
             }
         }
 
-        
-        
-            stage('Info'){
-            steps{ 
-                  echo "Job: ${env.JOB_NAME}"
-                  echo "Build ${env.BUILD_NUMBER}"
-
-               }
-            }
-/*    
-// ejercicio 2
-        stage('Tests') {
-      agent {
-         docker {
-             image 'python:3.6-slim'
-          }
-       }
+        // =========================
+        // Info
+        // =========================
+        stage('Info') {
             steps {
-                sh 'pytest -q'
+                echo "Job: ${env.JOB_NAME}"
+                echo "Build ${env.BUILD_NUMBER}"
             }
-        }  */
+        }
     }
 }
-
-
