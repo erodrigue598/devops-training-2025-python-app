@@ -8,16 +8,30 @@ pipeline {
             }
         }
 
-        stage('Instalar dependencias') {
-             agent {
-                 docker { 
-                            image 'python:3.6-slim'
-                  }
-             }
+     
+        stage('Lint') {
+            agent {
+                docker {
+                    image 'python-ci:3.6'
+                }
+            }
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'make lint'
             }
         }
+
+        stage('Test') {
+            agent {
+                docker {
+                    image 'python-ci:3.6'
+                }
+            }
+            steps {
+                sh 'make test'
+            }
+        }
+
+        
         
             stage('Info'){
             steps{ 
@@ -26,7 +40,7 @@ pipeline {
 
                }
             }
-    
+/*    
 // ejercicio 2
         stage('Tests') {
       agent {
@@ -37,7 +51,7 @@ pipeline {
             steps {
                 sh 'pytest -q'
             }
-        }
+        }  */
     }
 }
 
