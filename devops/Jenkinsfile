@@ -1,71 +1,32 @@
+/*
+  Practica 2 - Jenkinsfile dummy (PUNTO DE PARTIDA)
+
+  Este Jenkinsfile es intencionalmente simple. En la Practica 2 iras anadiendo
+  piezas (stages, agents, funciones Groovy, Docker build, docker compose, etc.)
+  hasta construir un pipeline CI/CD completo.
+*/
 
 pipeline {
-    agent any
+  // `agent any` = el pipeline se ejecuta en cualquier nodo/agente disponible.
+  agent any
 
-    stages {
-
-        // =========================
-        // Checkout
-        // =========================
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
+  stages {
+    stage('Test') {
+      /*
+        `agent` dentro de un stage permite que SOLO ese stage se ejecute en un contexto concreto.
+        En este caso, usamos Docker como capa de virtualizacion: los comandos se ejecutan dentro
+        de un contenedor temporal.
+      */
+      agent {
+        docker {
+          image 'maven:3.8.6-openjdk-11-slim'
         }
-
-        // =========================
-        // Construir imagen CI (usando ci.Dockerfile)
-        // =========================
-        stage('CI - Build tools image') {
-            steps {
-                script {
-                    // Nombre dinámico para evitar colisiones
-                    env.CI_IMAGE_NAME = "python-ci-tools:${env.BUILD_NUMBER}"
-
-                    // Construir la imagen desde devops/ci.Dockerfile
-                    docker.build(env.CI_IMAGE_NAME, "-f devops/ci.Dockerfile .")
-                }
-            }
-        }
-
-        // =========================
-        // Lint (instalando deps dentro del stage)
-        // =========================
-        stage('CI - Lint') {
-            agent {
-                docker {
-                    image "${env.CI_IMAGE_NAME}"
-                }
-            }
-            steps {
-                sh 'pip install -r requirements.txt flake8 mypy'
-                sh 'make lint'
-            }
-        }
-
-        // =========================
-        // Test (instalando deps dentro del stage)
-        // =========================
-        stage('CI - Test') {
-            agent {
-                docker {
-                    image "${env.CI_IMAGE_NAME}"
-                }
-            }
-            steps {
-                sh 'pip install -r requirements.txt'
-                sh 'make test'
-            }
-        }
-
-        // =========================
-        // Info
-        // =========================
-        stage('Info') {
-            steps {
-                echo "Job: ${env.JOB_NAME}"
-                echo "Build ${env.BUILD_NUMBER}"
-            }
-        }
+      }
+      steps {
+        sh 'mvn -version'
+        sh 'echo "Stage dummy. En la Practica 2 ejecutaras aqui los tests unitarios."'
+      }
     }
+  }
 }
+
