@@ -17,16 +17,43 @@ pipeline {
         En este caso, usamos Docker como capa de virtualizacion: los comandos se ejecutan dentro
         de un contenedor temporal.
       */
+     stage('Build CI Image') {
+        steps {
+               sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
+        } 
+     }
+    stage('Lint') { 
+        agent { 
+          docker { 
+             image 'ci-image' 
+          } 
+        } 
+      steps {
+             sh '''
+                 pip install --upgrade pip 
+                 pip install -r requirements.txt black flake8 mypy coverage 
+                 make lint
+             ''' 
+      }
+    }
      stage('Test') { 
-       agent { docker 
-              { image 'python:3.6-slim' 
+       agent {
+              docker {
+                  image 'ci-image' 
               } 
              } 
        steps { 
-        sh 'python --version' 
-        sh 'pip install --upgrade pip' 
-        sh 'pip install -r requirements.txt' 
-        sh 'pytest -v' } }
+        sh ''' 
+         pip install --upgrade pip
+         pip install -r requirements.txt black flake8 mypy coverage pytest 
+         make test 
+         '''
+       }
+     }  
+       // sh 'python --version' 
+      //  sh 'pip install --upgrade pip' 
+      //  sh 'pip install -r requirements.txt' 
+     ///   sh 'pytest -v' } }
   /*    steps {
         sh 'mvn -version'
         sh 'echo "Stage dummy. En la Practica 2 ejecutaras aqui los tests unitarios."'
