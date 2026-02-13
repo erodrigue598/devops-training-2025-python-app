@@ -19,7 +19,14 @@ pipeline {
       */
       agent {
         docker {
-          image 'maven:3.8.6-openjdk-11-slim'
+          image 'image 'python:3.6-slim'
+        }
+      }
+       steps { 
+             sh 'python --version' 
+             sh 'pip install --upgrade pip' 
+             sh 'pip install -r requirements.txt' 
+             sh 'pytest -v' }
         }
       }
       steps {
