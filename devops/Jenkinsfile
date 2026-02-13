@@ -1,54 +1,31 @@
+/*
+  Practica 2 - Jenkinsfile dummy (PUNTO DE PARTIDA)
+
+  Este Jenkinsfile es intencionalmente simple. En la Practica 2 iras anadiendo
+  piezas (stages, agents, funciones Groovy, Docker build, docker compose, etc.)
+  hasta construir un pipeline CI/CD completo.
+*/
+
 pipeline {
-    agent { 
-        docker { 
-            image 'python:3.10-slim' 
-        } 
+  // `agent any` = el pipeline se ejecuta en cualquier nodo/agente disponible.
+  agent any
+
+  stages {
+    stage('Test') {
+      /*
+        `agent` dentro de un stage permite que SOLO ese stage se ejecute en un contexto concreto.
+        En este caso, usamos Docker como capa de virtualizacion: los comandos se ejecutan dentro
+        de un contenedor temporal.
+      */
+      agent {
+        docker {
+          image 'maven:3.8.6-openjdk-11-slim'
+        }
+      }
+      steps {
+        sh 'mvn -version'
+        sh 'echo "Stage dummy. En la Practica 2 ejecutaras aqui los tests unitarios."'
+      }
     }
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Instalar dependencias') {
-            steps {
-                sh '''
-                apt-get update
-                apt-get install -y gcc libpq-dev python3-dev
-                pip install -r requirements.txt'''
-            }
-        }
-
-        stage('Tests') {
-            steps {
-                sh 'pytest -q'
-            }
-        }
-
-        stage('Info') {
-            steps { 
-                echo "Job: ${env.JOB_NAME}"
-                echo "Build: ${env.BUILD_NUMBER}" 
-            }
-        }
-
-        // Ejercicio 2
-        stage('Python Test') {
-            agent {
-                docker {
-                    image 'python:3.6-slim'
-                }
-            }
-            steps {
-                sh 'pip install -r requirements.txt'
-                sh 'pytest -q'
-            }
-        }
-
-    }
+  }
 }
-
-
