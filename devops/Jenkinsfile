@@ -19,6 +19,7 @@ pipeline {
          sh 'echo "=== WORKSPACE CONTENTS ==="'
          sh 'ls -l' 
          sh 'echo "==========================="'
+         sh 'ls -l devops'
        } 
      }
  /*   stage('Test') {
@@ -29,7 +30,7 @@ pipeline {
       */
      stage('Build CI Image') {
         steps {
-               sh 'docker build -f ci.Dockerfile -t ci-image .' 
+               sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
         } 
      }
     stage('Lint') { 
