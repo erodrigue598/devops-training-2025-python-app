@@ -23,6 +23,13 @@ pipeline {
          checkout scm // Baja el último commit 
        } 
      }
+     stage('Debug app.py') {
+      steps {
+          sh 'echo "=== Jenkins is using this app.py ==="'
+          sh 'nl -ba src/app.py | sed -n "1,40p"'
+            }
+      }
+
      stage('Build CI Image') {
         steps {
                sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
