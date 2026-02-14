@@ -11,10 +11,15 @@ pipeline {
   agent any
 
   stages {
-     stage('Clean Workspace') { 
+     stage('Checkout') { 
        steps { 
          deleteDir() 
-       }
+         checkout scm 
+         // Debug del workspace REAL 
+         sh 'echo "=== WORKSPACE CONTENTS ==="
+         sh 'ls -l' 
+         sh 'echo "==========================="'
+       } 
      }
  /*   stage('Test') {
       /*
