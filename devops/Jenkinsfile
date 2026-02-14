@@ -30,6 +30,7 @@ pipeline {
       */
      stage('Build CI Image') {
         steps {
+               sh 'echo === BUILD CONTEXT === && pwd && ls -R .'
                sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
         } 
      }
