@@ -17,6 +17,12 @@ pipeline {
         En este caso, usamos Docker como capa de virtualizacion: los comandos se ejecutan dentro
         de un contenedor temporal.
       */
+     stage('Checkout') {
+       steps { 
+         deleteDir() // Limpia el workspace
+         checkout scm // Baja el último commit 
+       } 
+     }
      stage('Build CI Image') {
         steps {
                sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
