@@ -25,6 +25,8 @@ pipeline {
      }
      stage('Debug app.py') {
       steps {
+          sh 'git branch --show-current' 
+          sh 'git log -1 --oneline'
           sh 'echo "=== Jenkins is using this app.py ==="'
           sh 'nl -ba src/app.py | sed -n "1,40p"'
             }
