@@ -43,6 +43,7 @@ pipeline {
              sh '''
                  pip install --upgrade pip 
                  pip install -r requirements.txt black flake8 mypy coverage 
+                 sh 'docker run --rm ci-image sh -c "echo === INSIDE CONTAINER === && nl -ba src/app.py | sed -n 1,80p"'
                  make lint
              ''' 
       }
