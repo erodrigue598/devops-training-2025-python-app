@@ -33,6 +33,7 @@ pipeline {
                sh 'echo === BUILD CONTEXT === && pwd && ls -R .'
                sh 'docker rmi -f ci-image || true'
                sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
+               sh 'docker run --rm ci-image sh -c "nl -ba src/app.py | sed -n 1,80p"'
         } 
      }
     stage('Lint') { 
