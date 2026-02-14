@@ -40,6 +40,7 @@ pipeline {
           } 
         } 
       steps {
+             sh 'echo === AGENT CONTAINER CONTENT === && nl -ba src/app.py | sed -n 1,80p'
              sh '''
                  pip install --upgrade pip 
                  pip install -r requirements.txt black flake8 mypy coverage 
