@@ -40,6 +40,7 @@ pipeline {
         agent { 
           docker { 
              image 'ci-image' 
+             args "-v ${env.WORKSPACE}:/app"
           } 
         } 
       steps {
