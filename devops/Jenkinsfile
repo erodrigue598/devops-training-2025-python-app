@@ -24,7 +24,7 @@ pipeline {
       */
      stage('Build CI Image') {
         steps {
-               sh 'docker build -f devops/ci.Dockerfile -t ci-image .' 
+               sh 'docker build -f ci.Dockerfile -t ci-image .' 
         } 
      }
     stage('Lint') { 
