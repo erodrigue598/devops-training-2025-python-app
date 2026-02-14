@@ -11,6 +11,11 @@ pipeline {
   agent any
 
   stages {
+     stage('Clean Workspace') { 
+       steps { 
+         deleteDir() 
+       }
+     }
  /*   stage('Test') {
       /*
         `agent` dentro de un stage permite que SOLO ese stage se ejecute en un contexto concreto.
